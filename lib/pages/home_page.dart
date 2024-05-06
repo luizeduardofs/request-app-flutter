@@ -1,41 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:request_app_flutter/pages/todo_page.dart';
 import 'package:request_app_flutter/services/user_service.dart';
 
-import '../models/user_model.dart';
-
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final UserService service = UserService();
+
+  HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  final userService = UserService();
-  late Future<List<User>> _usersFuture;
-
   @override
   void initState() {
     super.initState();
-    _usersFuture = userService.getAllUsers();
+    fetchData();
+  }
+
+  void fetchData() async {
+    await widget.service.getAllUsers();
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    var users = widget.service.user;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('User List'),
       ),
-      body: FutureBuilder<List<User>>(
-        future: _usersFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Erro: ${snapshot.error}'));
-          } else {
-            final users = snapshot.data!;
-            return ListView.builder(
+      body: users == null
+          ? const Center(child: CircularProgressIndicator())
+          : ListView.builder(
               itemCount: users.length,
               itemBuilder: (context, index) {
                 final user = users[index];
@@ -43,9 +41,18 @@ class _HomePageState extends State<HomePage> {
                   title: Text(user.name),
                 );
               },
-            );
-          }
+            ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) {
+                return TodoPage();
+              },
+            ),
+          );
         },
+        child: const Icon(Icons.arrow_right),
       ),
     );
   }
