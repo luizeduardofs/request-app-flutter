@@ -19,4 +19,13 @@ class Todo {
       completed: json['completed'],
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'userId': userId,
+      'id': id,
+      'title': title,
+      'completed': completed,
+    };
+  }
 }
