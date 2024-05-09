@@ -11,4 +11,8 @@ class TodoService {
     final response = await _dio.get(_url);
     todo = (response.data as List).map((json) => Todo.fromJson(json)).toList();
   }
+
+  Future<void> addTodo(Todo newTodo) async {
+    await _dio.post(_url, data: newTodo.toMap());
+  }
 }

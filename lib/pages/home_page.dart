@@ -38,7 +38,9 @@ class _HomePageState extends State<HomePage> {
               itemBuilder: (context, index) {
                 final user = users[index];
                 return ListTile(
+                  leading: const Icon(Icons.person),
                   title: Text(user.name),
+                  trailing: Text(user.email),
                 );
               },
             ),
